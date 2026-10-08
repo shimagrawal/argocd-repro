@@ -14,7 +14,7 @@ spec:
     kustomize:
       replicas:
         - name: kustomize-guestbook-ui
-          count: 1
+          count: 2
   destination:
     name: kargo-quickstart
     namespace: demo
