@@ -16,7 +16,7 @@ spec:
         - name: kustomize-guestbook-ui
           count: 2
   destination:
-    name: cluster-uat
+    name: kargo-quickstart
     namespace: demo
   syncPolicy:
     automated:
