@@ -15,6 +15,20 @@ spec:
       replicas:
         - name: kustomize-guestbook-ui
           count: 2
+    customization:
+      include:
+        - group: '*'
+          kind: Deployment
+          name: '*'
+          namespace: '*'
+        - group: '*'
+          kind: ReplicaSet
+          name: '*'
+          namespace: '*'
+        - group: '*'
+          kind: Service
+          name: '*'
+          namespace: '*'
   destination:
     name: kargo-quickstart
     namespace: demo
