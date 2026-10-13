@@ -16,7 +16,7 @@ spec:
         - name: kustomize-guestbook-ui
           count: 2
   destination:
-    name: in-cluster
+    name: oss-b
     namespace: demo
   syncPolicy:
     automated:
