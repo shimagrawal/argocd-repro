@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ds-repro
+  namespace: argocd
+  annotations:
+    # lets the Kargo Stage update this Application
+    kargo.akuity.io/authorized-stage: ds-repro:test
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shimagrawal/argocd-repro.git
+    targetRevision: main
+    path: ds-repro
+  destination:
+    name: kargo-quickstart
+    namespace: ds-repro
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

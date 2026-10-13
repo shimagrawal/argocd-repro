@@ -1,0 +1,42 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: ds-repro
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: ds-repro
+  namespace: ds-repro
+spec:
+  subscriptions:
+    - git:
+        repoURL: https://github.com/shimagrawal/argocd-repro.git
+        branch: main
+        includePaths:
+          - ds-repro
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: test
+  namespace: ds-repro
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: ds-repro
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      steps:
+        # also makes Kargo track the Application's health for this Stage
+        - uses: argocd-update
+          config:
+            apps:
+              - name: ds-repro
+                sources:
+                  - repoURL: https://github.com/shimagrawal/argocd-repro.git
+                    desiredRevision: ${{ commitFrom("https://github.com/shimagrawal/argocd-repro.git").ID }}
+                    updateTargetRevision: true
