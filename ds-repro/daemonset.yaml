@@ -16,4 +16,4 @@ spec:
         image: nginx:1.27
         readinessProbe:
           httpGet: {path: /, port: 80}
-          initialDelaySeconds: 60    # keeps it Progressing for ~60s so you can watch it
+          initialDelaySeconds: 60    # keeps it Progressing for ~60s so you can watch it# touch 1791889432
