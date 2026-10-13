@@ -30,7 +30,7 @@ spec:
           name: '*'
           namespace: '*'
   destination:
-    name: kargo-quickstart
+    name: cluster-uat
     namespace: demo
   syncPolicy:
     automated:
