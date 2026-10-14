@@ -16,7 +16,7 @@ spec:
         - name: kustomize-guestbook-ui
           count: 2
   destination:
-    name: fix-a
+    name: fix-b
     namespace: demo
   syncPolicy:
     automated:
