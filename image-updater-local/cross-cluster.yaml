@@ -1,0 +1,85 @@
+# Cross-cluster case: one ImageUpdater (iu-cross) matching 2 apps on test-a and 1 on test-b.
+# Both agents must see it, so both write its status (each with only its own count).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cross-a1
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      namePrefix: cross-a1-
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: test-a
+    namespace: cross-a1
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cross-a2
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      namePrefix: cross-a2-
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: test-a
+    namespace: cross-a2
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cross-b1
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      namePrefix: cross-b1-
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: test-b
+    namespace: cross-b1
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: iu-cross
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: "cross-*"
+      images:
+        - alias: web
+          imageName: nginx:~1.25
+          manifestTargets:
+            kustomize:
+              name: gcr.io/google-samples/gb-frontend
