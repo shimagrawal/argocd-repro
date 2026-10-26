@@ -1,0 +1,32 @@
+# One ImageUpdater per app. Each selects only the app on its own cluster, so without the
+# k3s-proxy filter (akuityio/agent#1870) the other cluster's image-updater still reconciles it
+# and writes applicationsMatched: 0.
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: iu-prod
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: guestbook-prod
+      images:
+        - alias: web
+          imageName: nginx:~1.25
+          manifestTargets:
+            kustomize:
+              name: gcr.io/google-samples/gb-frontend
+---
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: iu-uat
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: guestbook-uat
+      images:
+        - alias: web
+          imageName: nginx:~1.25
+          manifestTargets:
+            kustomize:
+              name: gcr.io/google-samples/gb-frontend

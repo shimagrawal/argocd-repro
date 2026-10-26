@@ -1,0 +1,45 @@
+# One guestbook app per cluster. The Kustomize image override starts both on nginx:1.25.0,
+# so Image Updater has something to bump (to the newest 1.25.x).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: cluster-prod
+    namespace: guestbook
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-uat
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: cluster-uat
+    namespace: guestbook
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true

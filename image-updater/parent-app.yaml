@@ -1,0 +1,20 @@
+# Create this one in the Argo CD UI or with `argocd app create -f`. It deploys everything in
+# this folder (the two Applications and the two ImageUpdaters) into the control plane.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: iu-repro
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shimagrawal/argocd-repro.git
+    path: image-updater
+    targetRevision: HEAD
+    directory:
+      exclude: parent-app.yaml
+  destination:
+    name: in-cluster
+    namespace: argocd
+  syncPolicy:
+    automated: {}
