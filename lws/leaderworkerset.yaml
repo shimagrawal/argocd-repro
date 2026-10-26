@@ -1,0 +1,16 @@
+apiVersion: leaderworkerset.x-k8s.io/v1
+kind: LeaderWorkerSet
+metadata:
+  name: demo-lws
+  namespace: demo
+spec:
+  replicas: 1
+  leaderWorkerTemplate:
+    size: 2          # 1 leader + 1 worker per group
+    restartPolicy: RecreateGroupOnPodRestart
+    leaderTemplate:
+      spec:
+        containers: [{name: leader, image: busybox, command: ["sleep","infinity"]}]
+    workerTemplate:
+      spec:
+        containers: [{name: worker, image: busybox, command: ["sleep","infinity"]}]
