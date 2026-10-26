@@ -1,0 +1,44 @@
+# One guestbook app per test cluster (local Akuity Platform, akuityio/agent#1870 testing).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-a
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: test-a
+    namespace: guestbook-a
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-b
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    path: kustomize-guestbook
+    targetRevision: HEAD
+    kustomize:
+      images:
+        - gcr.io/google-samples/gb-frontend=nginx:1.25.0
+  destination:
+    name: test-b
+    namespace: guestbook-b
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true

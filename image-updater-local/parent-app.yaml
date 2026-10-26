@@ -1,0 +1,26 @@
+# Create this one in the local Argo CD UI (New App -> Edit as YAML). It deploys the two
+# Applications and the two ImageUpdaters in this folder into the control plane.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: iu-repro-local
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/shimagrawal/argocd-repro.git
+    path: image-updater-local
+    targetRevision: HEAD
+    directory:
+      exclude: parent-app.yaml
+  destination:
+    name: in-cluster
+    namespace: argocd
+  # Image Updater writes new tags into the child Applications; don't report that as drift.
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /spec/source/kustomize/images
+  syncPolicy:
+    automated: {}

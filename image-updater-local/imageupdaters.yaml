@@ -1,0 +1,30 @@
+# One ImageUpdater per app; each selects only the app on its own cluster.
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: iu-a
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: guestbook-a
+      images:
+        - alias: web
+          imageName: nginx:~1.25
+          manifestTargets:
+            kustomize:
+              name: gcr.io/google-samples/gb-frontend
+---
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: iu-b
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: guestbook-b
+      images:
+        - alias: web
+          imageName: nginx:~1.25
+          manifestTargets:
+            kustomize:
+              name: gcr.io/google-samples/gb-frontend
